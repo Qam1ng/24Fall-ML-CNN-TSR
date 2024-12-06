@@ -1,0 +1,8 @@
+CNN Structure and Parameters Tuning:
+
+1. Add two layers --> Extract more features and improve performance
+
+2. Increase Dense unit  --> Dense layers can learn high-level representations.
+
+3. Reduce Dropout ratio --> keep more feature information as possible
+
