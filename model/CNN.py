@@ -46,7 +46,7 @@ len(train_data.ClassId.value_counts())
 im1 = cv2.imread(os.path.join(data_dir, 'Train', '0', '00000_00000_00000.png'))
 im2 = cv2.imread(os.path.join(data_dir, 'Train', '0', '00000_00000_00005.png'))
 
-# Verify images are loaded
+# # Verify images are loaded
 if im1 is None:
     print("im1 could not be loaded. Please check the path.")
 else:
@@ -79,6 +79,8 @@ for i in range(1,26):
     plt.grid()
     plt.xlabel(rand_img.shape[1], fontsize = 20)#width of image
     plt.ylabel(rand_img.shape[0], fontsize = 20)#height of image
+
+plt.show()
 
 # Overall distribution on images with different classes
 df = train_data.ClassId.value_counts() 
@@ -138,19 +140,24 @@ validation_generator = train_datagen.flow_from_directory(
 
 # Step 3: Building the CNN Model !!!!!!
 model = tf.keras.models.Sequential([
+    # Convolutional Layer: Detect features in the input image using sliding kernels and define input shape
     tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(30,30,3)),
-    # tf.keras.layers.MaxPooling2D(2,2),
     tf.keras.layers.Conv2D(32, (3,3), activation='relu',padding='same'),
+    # Pooling Layer: Reduce spatial dimensions to decrease computational complexity and prevent overfitting
     tf.keras.layers.MaxPooling2D(2,2),
+    
     tf.keras.layers.Conv2D(64, (3,3), activation='relu',padding='same'),
-    # tf.keras.layers.MaxPooling2D(2,2),
     tf.keras.layers.Conv2D(64, (3,3), activation='relu',padding='same'),
     tf.keras.layers.MaxPooling2D(2,2),
+    
+    # Another Convolutional and Pooling Layers
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu',padding='same'),
+    tf.keras.layers.Conv2D(128, (3,3), activation='relu',padding='same'),
+    tf.keras.layers.MaxPooling2D(2,2),
+    
     tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dropout(0.5),
-    # tf.keras.layers.Dense(8, activation='relu'),
-    # tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(512, activation='relu'), # Fully Connected Layer: Perform the final classification or regression
+    tf.keras.layers.Dropout(0.05), # Dropout Layer: Prevents overfitting by randomly setting a fraction of input units to 0 during training
     tf.keras.layers.Dense(43, activation='softmax'),
 ])
 model.compile(optimizer='adam',
